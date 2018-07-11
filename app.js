@@ -15,13 +15,8 @@ app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-// routes
-
-app.use('/products', productRoutes)
-app.use('/orders', orderRoutes)
-
 // CORS
-///* Somehow, adding this call makes unrouted url time out. Not sure why yet.
+
 app.use((req, res, next) => {
     res.header('Acess-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Headers', 'Origin, X-Request-With, Content-Type, Accept, Authorization')
@@ -31,8 +26,13 @@ app.use((req, res, next) => {
         // if the method was OPTIONS
         return res.status(200).json({})
     }
+    next()
 })
-//*/
+
+// routes
+
+app.use('/products', productRoutes)
+app.use('/orders', orderRoutes)
 
 // error handling
 
