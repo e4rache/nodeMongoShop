@@ -9,6 +9,7 @@ const router = express.Router()
 router.get('/', (req, res, next) => {
     Order.find()
     .select('_id product quantity')
+    .populate('product', '_id name price') // http://mongoosejs.com/docs/populate.html
     .exec()
     .then( docs => {
         res.status(200).json({
@@ -74,6 +75,8 @@ router.post('/', (req, res, next) => {
 router.get('/:orderId', (req, res, next) => {
     const id = req.params.orderId
     Order.findById(id)
+    .select('_id product quantity')
+    .populate('product','_id name price') // http://mongoosejs.com/docs/populate.html
     .exec()
     .then(order => {
         if (!order) {
