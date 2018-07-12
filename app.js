@@ -12,9 +12,11 @@ const app = express()
 
 mongoose.connect('mongodb+srv://e4rache:' + process.env.MONGO_ATLAS_PASSWORD +'@cluster0-aun2c.mongodb.net/test?retryWrites=true', { useNewUrlParser: true })
 
+mongoose.Promise = global.Promise
+
 // middlewares
 
-app.use(morgan('dev'))
+app.use(morgan('dev')) // logging
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
