@@ -1,12 +1,16 @@
 const express = require('express')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
-
-const app = express()
-
+const mongoose = require('mongoose')
 
 const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
+
+const app = express()
+
+// db connection
+
+mongoose.connect('mongodb+srv://e4rache:' + process.env.MONGO_ATLAS_PASSWORD +'@cluster0-aun2c.mongodb.net/test?retryWrites=true', { useNewUrlParser: true })
 
 // middlewares
 
