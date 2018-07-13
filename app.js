@@ -18,6 +18,8 @@ mongoose.connect('mongodb+srv://e4rache:' + process.env.MONGO_ATLAS_PASSWORD +'@
 
 app.use(morgan('dev')) // logging
 
+app.use('/images',express.static('images'))
+
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
