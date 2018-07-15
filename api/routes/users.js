@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const User = require('../models/user')
 
@@ -48,23 +49,30 @@ router.post('/signup', (req, res, next) => {
 })
 
 router.post('/signin', (req, res, next) => {
-    User.find({ email: req.body.email})
+    User.findOne({ email: req.body.email})
     .exec()
     .then(user => {
-        if (user.length < 1) {
+        if (!user) {
             return res.status(401).json({
-                message: 'authentication failed -'
+                message: 'authentication failed'
             })
         }
-        bcrypt.compare(req.body.password, user[0].password, (error, result) => {
+        bcrypt.compare(req.body.password, user.password, (error, result) => {
             if (error) {
                 return res.status(401).json({
                     message: 'authentication failed',
                 })
             }
             if (result) {
+                const token = jwt.sign({
+                    email: user.email,
+                    userId: user._id
+                }, process.env.JWT_KEY, {
+                    expiresIn: "1h"
+                })
                 return res.status(200).json({
-                    message: 'authentication succesful'
+                    message: 'authentication successful',
+                    token: token
                 })
             } else { // wrong password
                 return res.status(401).json({
