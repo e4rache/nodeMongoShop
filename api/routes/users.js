@@ -14,10 +14,10 @@ router.post('/signup', (req, res, next) => {
     .then( user => {
         if (user.length >= 1) {
             return res.status(409).json({
-                message: 'mail exists'
+                message: 'email already exists'
             })
         } else {
-            bcrypt.hash(req.body.email, 10, (error, hash) => {
+            bcrypt.hash(req.body.password, 10, (error, hash) => {
                 if (error) {
                     return res.status(500).json({
                         error: error
@@ -44,6 +44,40 @@ router.post('/signup', (req, res, next) => {
                 }
             })
         }
+    })
+})
+
+router.post('/signin', (req, res, next) => {
+    User.find({ email: req.body.email})
+    .exec()
+    .then(user => {
+        if (user.length < 1) {
+            return res.status(401).json({
+                message: 'authentication failed -'
+            })
+        }
+        bcrypt.compare(req.body.password, user[0].password, (error, result) => {
+            if (error) {
+                return res.status(401).json({
+                    message: 'authentication failed',
+                })
+            }
+            if (result) {
+                return res.status(200).json({
+                    message: 'authentication succesful'
+                })
+            } else { // wrong password
+                return res.status(401).json({
+                    message: 'authentication failed'
+                })
+            }
+        })
+    })
+    .catch(error => {
+        console.log(error)
+        res.status(500).json({
+            error: error
+        })
     })
 })
 
