@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const multer = require('multer')
 
 const Product = require('../models/product')
+const checkAuth = require('../middleware/check-auth')
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -62,9 +63,7 @@ router.get('/', (req, res, next) => {
     })
 })
 
-router.post('/', upload.single('productImage'),(req, res, next) => {
-
-    console.log(req.file)
+router.post('/', checkAuth, upload.single('productImage'),(req, res, next) => {
 
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
@@ -79,13 +78,13 @@ router.post('/', upload.single('productImage'),(req, res, next) => {
         res.status(201).json({
             message: 'new product created',
             product: {
-                id: result._id,
+                _id: result._id,
                 name: result.name,
                 price: result.price,
                 productImage: result.productImage,
                 request: {
                     type: 'GET',
-                    url: 'http://127.0.0.1:3000/product/'+result._id
+                    url: 'http://127.0.0.1:3000/product/' + result._id
                 }
 
             }
@@ -127,7 +126,7 @@ router.get('/:productId', (req, res, next) => {
     })
 })
 
-router.patch('/:productId', (req, res, next) => {
+router.patch('/:productId', checkAuth, (req, res, next) => {
     const id = req.params.productId
     const updateOps = {}
     // TODO: req.body needs some sort of validation
@@ -157,7 +156,7 @@ router.patch('/:productId', (req, res, next) => {
     })
 })
 
-router.delete('/:productId', (req, res, next) => {
+router.delete('/:productId', checkAuth, (req, res, next) => {
     const id = req.params.productId
     Product.remove({ _id: id })
     .exec()
