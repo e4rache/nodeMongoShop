@@ -1,7 +1,14 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
-const Order = require("../models/order");
-const Product = require("../models/product");
+const Order = require("../models/order")
+const Product = require("../models/product")
+
+const errorHandler = (error,res) => {
+    console.log('error raised : ' + error)
+    res.status(500).json({
+        error: error
+    })
+}
 
 exports.getAll = (req, res, next) => {
     Order.find()
@@ -25,6 +32,7 @@ exports.getAll = (req, res, next) => {
         })
     })
     .catch( error => {
+        console.log('error raised : ' + error)
         res.status(500).json({
             error: error
         })

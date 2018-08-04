@@ -10,7 +10,7 @@ const ordersController = require('../controllers/orders')
 
 const router = express.Router()
 
-router.get('/', checkAuth, ordersController.getAll)
+router.get('/',  ordersController.getAll)
 
 router.post('/', checkAuth, ordersController.create)
 
